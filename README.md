@@ -1,1 +1,1 @@
-# Docker-Compose-PHP-MySQL-Apache2-PHPMyadmin-Redis
+# Docker Compose PHP MySQL Apache2 PHPMyadmin Redis

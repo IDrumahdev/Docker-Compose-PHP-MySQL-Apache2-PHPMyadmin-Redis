@@ -1,0 +1,65 @@
+version: "3.1"
+services:
+    
+    #Config PHP 8
+    app:
+        build: .
+        container_name: php-app
+        working_dir: /var/www/
+        volumes:
+            - ./:/var/www
+        networks:
+            - default
+
+    #Config MySQL
+    db:
+        image: mysql
+        ports: 
+            - "3307:3306"
+        command: --default-authentication-plugin=mysql_native_password
+        environment:
+            MYSQL_DATABASE: rumahdev
+            MYSQL_PASSWORD: root
+            MYSQL_ROOT_PASSWORD: root
+        volumes:
+            - ./dump:/docker-entrypoint-initdb.d
+            - ./conf:/etc/mysql/conf.d
+            - persistent:/var/lib/mysql
+        networks:
+            - default
+
+    #Config Web Server
+    www:
+        build: .
+        ports: 
+            - "8088:80"
+        volumes:
+            - ./www:/var/www/html
+        links:
+            - db
+        networks:
+            - default
+
+    #Config PHPMyadmin
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        links: 
+            - db:db
+        ports:
+            - 8880:80
+        environment:
+            MYSQL_USER: root
+            MYSQL_PASSWORD: root
+            MYSQL_ROOT_PASSWORD: root
+
+    #Config Redis
+    redis:
+        image: redis
+        restart: always
+        ports:
+        - "6380:6379"
+        volumes:
+        - /data/redis:/data
+        command: redis-server --appendonly yes
+volumes:
+    persistent:
