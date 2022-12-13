@@ -46,7 +46,7 @@ services:
         links: 
             - db:db
         ports:
-            - 8880:80
+            - 8800:80
         environment:
             MYSQL_USER: root
             MYSQL_PASSWORD: root
